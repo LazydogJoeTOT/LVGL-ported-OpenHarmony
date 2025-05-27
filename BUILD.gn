@@ -1,0 +1,51 @@
+import("//build/lite/config/component/lite_component.gni")
+
+# 获取标准化项目根路径
+project_root = rebase_path("//")
+
+# 动态获取LVGL组件源文件
+LVGL_sources = exec_script(
+    "//build/scripts/find.py",
+    [
+        "--pattern=*.[c]",
+        "--base-dir=${project_root}",
+        "--return-relpath",
+        "${project_root}/applications/sample/wifi-iot/app/LVGL"
+    ],
+    "list lines"
+)
+
+LVGL_include_dirs = exec_script(
+    "//build/scripts/finddir.py",
+    [
+        "--pattern=*.[h]",
+        "--base-dir=${project_root}",
+        "--return-relpath",
+        "${project_root}/applications/sample/wifi-iot/app/LVGL"
+    ],
+    "list lines"
+)
+
+
+# LVGL组件库构建
+static_library("LVGL") {
+    sources = [
+        
+    ] + LVGL_sources - [
+        
+    ]
+    include_dirs = [
+        # "//device/hisilicon/hispark_pegasus/sdk_liteos/platform/os/Huawei_LiteOS/components/lib/libc/musl/arch/riscv32/bits"
+        "//utils/native/lite/include",
+        "//kernel/liteos_m/components/cmsis/2.0",
+        "//base/iot_hardware/peripheral/interfaces/kits",
+        "//device/soc/hisilicon/hi3861v100/hi3861_adapter/hals/communication/wifi_lite/wifiservice",
+        "//device/soc/hisilicon/hi3861v100/hi3861_adapter/kal",
+    ] + LVGL_include_dirs - [
+        # "//applications/sample/wifi-iot/app/LVGL/src/libs/thorvg/rapidjson/msinttypes"
+    ]
+}
+
+
+
+
